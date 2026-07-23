@@ -14,7 +14,7 @@ def get_model_architecture(model_key: str):
 
 def load_model(model_key: str, num_classes: int, device: torch.device):
     model = get_model_architecture(model_key)
-    if model_key == "custom_cnn": model.fc = nn.Linear(model.fc.in_features, num_classes)
+    if model_key == "custom_cnn": pass
     elif model_key == "mobilenetv2": model.classifier[1] = nn.Linear(model.classifier[1].in_features, num_classes)
     elif model_key == "efficientnetb0": model.classifier[1] = nn.Linear(model.classifier[1].in_features, num_classes)
     elif model_key == "resnet50": model.fc = nn.Linear(model.fc.in_features, num_classes)
