@@ -16,6 +16,6 @@ dist/
 .idea/
 
 # Model weights
-backend/models/*.pth
-backend/models/
+#backend/models/*.pth
+#backend/models/
 !backend/models/.gitkeep
