@@ -45,14 +45,20 @@ async def predict(file: UploadFile = File(...)):
             probs = torch.softmax(output, dim=1).squeeze(0)
             probs_list.append(probs)
     ensemble_result = weighted_ensemble_predict(probs_list, ENSEMBLE_WEIGHTS)
+
     grad_cam = None
-    if "resnet50" in grad_cam_cache:
-        grad_cam_obj = grad_cam_cache["resnet50"]
-        cam, class_idx = grad_cam_obj.generate(input_tensor, class_idx=ensemble_result["class_index"])
+    # generate grad-cam if available for the model
+    if "convnext_tiny" in grad_cam_cache:
+        grad_cam_obj = grad_cam_cache["convnext_tiny"]
+        cam, class_idx = grad_cam_obj.generate(
+            input_tensor,
+            class_idx=ensemble_result["class_index"]
+        )
         cam_uint8 = (cam * 255).astype(np.uint8)
         cam_uint8 = cv2.applyColorMap(cam_uint8, cv2.COLORMAP_JET)
-        _, buffer = cv2.imencode('.jpg', cam_uint8)
-        grad_cam = base64.b64encode(buffer).decode('utf-8')
+        _, buffer = cv2.imencode(".jpg", cam_uint8)
+        grad_cam = base64.b64encode(buffer).decode("utf-8")
+
     info = {
         "Healthy": {"symptoms":"No symptoms.","description":"Healthy animal.","recommendations":"Continue regular checks.","prevention":"Vaccination."},
         "Foot-and-Mouth Disease": {"symptoms":"Fever, blisters in mouth and feet.","description":"Highly contagious viral disease.","recommendations":"Isolate, disinfect, report.","prevention":"Vaccination, quarantine."},
@@ -61,6 +67,7 @@ async def predict(file: UploadFile = File(...)):
         "Bovine Tuberculosis": {"symptoms":"Chronic cough, weight loss.","description":"Chronic bacterial respiratory disease.","recommendations":"Test and cull, improve biosecurity.","prevention":"Test and cull."},
         "Brucellosis": {"symptoms":"Abortion, infertility, joint pain.","description":"Bacterial infection causing reproductive failure.","recommendations":"Vaccination, test and cull.","prevention":"Vaccination, test and cull."}
     }
+
     disease = ensemble_result["class"]
     response = {
         "prediction": disease,

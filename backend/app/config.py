@@ -13,11 +13,11 @@ MODEL_NAMES = {
 }
 
 ENSEMBLE_WEIGHTS = {
-    "mobilenetv2": 0.15,
-    "efficientnetb0": 0.20,
-    "resnet50": 0.20,
-    "densenet121": 0.15,
-    "convnext_tiny": 0.15,
+    #"mobilenetv2": 0.15,
+    #"efficientnetb0": 0.20,
+    #"resnet50": 0.20,
+    #"densenet121": 0.15,
+    "convnext_tiny": 1.00,
 }
 
 CLASSES = [
